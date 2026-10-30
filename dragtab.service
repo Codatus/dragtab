@@ -1,0 +1,14 @@
+[Unit]
+Description=DragTab - Alt+Tab while dragging out of GTK applications
+# Started at login by dragtab-start.desktop, because many lightweight desktops
+# (LXQt, Xfce, ...) never activate graphical-session.target.
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+# Set DRAGTAB_CLASSES="thunderbird firefox" in this file to change the application list
+EnvironmentFile=-%h/.config/dragtab.conf
+ExecStart=%h/.local/bin/dragtab $DRAGTAB_CLASSES
+Restart=on-failure
+RestartSec=3
