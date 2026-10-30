@@ -17,6 +17,7 @@ Usage: dragtab.py [-v] [class ...]
 """
 import ctypes
 import ctypes.util
+import os
 import re
 import signal
 import subprocess
@@ -72,6 +73,17 @@ class XIEventMask(ctypes.Structure):
                 ("mask", ctypes.POINTER(ctypes.c_ubyte))]
 
 
+IO_ERROR_HANDLER = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p)
+
+
+@IO_ERROR_HANDLER
+def connection_lost(dpy):
+    # The X server went away, usually at logout. That is a normal end, not a
+    # crash, so exit with 0 and let systemd not restart the service.
+    log("X connection lost, exiting")
+    os._exit(0)
+
+
 def x_libraries():
     xlib = ctypes.CDLL(ctypes.util.find_library("X11") or "libX11.so.6")
     xi = ctypes.CDLL(ctypes.util.find_library("Xi") or "libXi.so.6")
@@ -88,6 +100,7 @@ def x_libraries():
     xlib.XGetEventData.argtypes = [ctypes.c_void_p, ctypes.POINTER(XGenericEventCookie)]
     xlib.XFreeEventData.argtypes = [ctypes.c_void_p, ctypes.POINTER(XGenericEventCookie)]
     xlib.XFlush.argtypes = [ctypes.c_void_p]
+    xlib.XSetIOErrorHandler.argtypes = [IO_ERROR_HANDLER]
     xi.XIQueryVersion.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int)]
     xi.XISelectEvents.argtypes = [ctypes.c_void_p, ctypes.c_ulong, ctypes.POINTER(XIEventMask), ctypes.c_int]
     return xlib, xi
@@ -102,6 +115,7 @@ def keycodes(xlib, dpy, *names):
 def raw_events():
     """Yields (evtype, detail) for raw key and button events, regardless of grabs."""
     xlib, xi = x_libraries()
+    xlib.XSetIOErrorHandler(connection_lost)
     dpy = xlib.XOpenDisplay(None)
     if not dpy:
         sys.exit("Cannot connect to the X server (is DISPLAY set?)")
@@ -129,7 +143,7 @@ def raw_events():
 
     ev = XEvent()
     while True:
-        xlib.XNextEvent(dpy, ctypes.byref(ev))  # exits with status 1 if the connection is lost
+        xlib.XNextEvent(dpy, ctypes.byref(ev))  # calls connection_lost if the server goes away
         c = ev.xcookie
         if c.type != GENERIC_EVENT or c.extension != opcode.value:
             continue
