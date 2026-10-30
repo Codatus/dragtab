@@ -3,5 +3,5 @@ Type=Application
 Name=DragTab
 Comment=Starts the DragTab service (Alt+Tab while dragging)
 Comment[de]=Startet den DragTab-Dienst (Alt+Tab beim Ziehen)
-Exec=sh -c "systemctl --user import-environment DISPLAY XAUTHORITY && systemctl --user restart dragtab.service"
+Exec=sh -c "systemctl --user import-environment DISPLAY XAUTHORITY; systemctl --user reset-failed dragtab.service; systemctl --user restart dragtab.service"
 NoDisplay=true
