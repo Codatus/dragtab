@@ -45,6 +45,12 @@ cd dragtab
 ./install.sh
 ```
 
+Ohne git:
+
+```sh
+wget -qO- https://github.com/Codatus/dragtab/archive/refs/heads/main.tar.gz | tar xz && cd dragtab-main && ./install.sh
+```
+
 Das Skript installiert für den aktuellen Benutzer:
 
 | Datei | Zweck |
