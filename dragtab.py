@@ -10,8 +10,9 @@ raises the next window via xdotool - immediately, not only when Alt is
 released. Shift+Alt+Tab goes backwards.
 
 It only acts when the active window belongs to one of the given WM_CLASS
-names (default: thunderbird), so it does not switch twice in applications
-where the window manager already receives Alt+Tab.
+names (default: thunderbird and thunderbird-default, the name used by
+Debian's package), so it does not switch twice in applications where the
+window manager already receives Alt+Tab.
 
 Usage: dragtab.py [-v] [class ...]
 """
@@ -23,7 +24,7 @@ import signal
 import subprocess
 import sys
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 LEFT_BUTTON = 1
 
@@ -38,7 +39,7 @@ if "--version" in sys.argv[1:]:
 
 args = [a for a in sys.argv[1:] if a != "-v"]
 VERBOSE = "-v" in sys.argv[1:]
-CLASSES = {c.lower() for c in args} or {"thunderbird"}
+CLASSES = {c.lower() for c in args} or {"thunderbird", "thunderbird-default"}
 
 
 def log(*parts):

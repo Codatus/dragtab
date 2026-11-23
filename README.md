@@ -19,8 +19,8 @@ mouse button is held and raises the next window. Just drop the email there.
 - Without a drag nothing changes – Alt+Tab is still handled by your window
   manager.
 - DragTab only acts for the applications you tell it about (default:
-  Thunderbird), so it does not switch twice in applications where Alt+Tab
-  already works.
+  Thunderbird, including Debian's package with WM_CLASS `thunderbird-default`),
+  so it does not switch twice in applications where Alt+Tab already works.
 
 ## Requirements
 

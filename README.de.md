@@ -20,7 +20,7 @@ lässt man die Mail einfach fallen.
 - Ohne Ziehen bleibt alles beim Alten – Alt+Tab macht weiter der
   Fenstermanager.
 - DragTab greift nur bei den Programmen, die man ihm nennt (Standard:
-  Thunderbird). So schaltet es bei Programmen, in denen Alt+Tab schon geht,
+  Thunderbird, auch das Debian-Paket mit WM_CLASS `thunderbird-default`). So schaltet es bei Programmen, in denen Alt+Tab schon geht,
   nicht doppelt um.
 
 ## Voraussetzungen
